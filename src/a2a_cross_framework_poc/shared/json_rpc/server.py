@@ -28,10 +28,11 @@ async def handle_rpc(rpc_req: JsonRpcRequest):
 
         translator = get_translator_agent()
         translation_task = Task(
-            description=f"Translate the following to Chinese:\n{text_to_translate}",
-            agent=translator,
-            expected_output=""
+        description=f"Translate the following text **into simplified Chinese only**, without repeating the English text.:\n{text_to_translate}",
+        agent=translator,
+        expected_output=""
         )
+
         crew = Crew(agents=[translator], tasks=[translation_task])
         result = crew.kickoff()
         final_text = next(iter(result.values())) if isinstance(result, dict) else result
