@@ -1,0 +1,33 @@
+{
+  "name": "Translator Agent",
+  "description": "An agent that translates English text to Chinese.",
+  "url": "http://localhost:8001",
+  "provider": {
+    "organization": "Neural Ninja Labs",
+    "url": "http://neuralninja.dev"
+  },
+  "version": "1.0.0",
+  "documentationUrl": "http://localhost:8001/docs",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "authentication": {
+    "schemes": ["none"]
+  },
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain"],
+  "skills": [
+    {
+      "id": "translate-en-zh",
+      "name": "Translate English to Chinese",
+      "description": "Translates English sentences into simplified Chinese.",
+      "tags": ["translation", "language", "chinese"],
+      "examples": [
+        "Translate: Hello, how are you?",
+        "Translate this: The future of agents is modular and interoperable."
+      ]
+    }
+  ]
+}

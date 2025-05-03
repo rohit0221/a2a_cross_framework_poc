@@ -1,47 +1,53 @@
-# writer_agent_langgraph/main.py
+# src/a2a_cross_framework_poc/writer_agent_langgraph/main.py
 
-import uuid
 import requests
+import uuid
 import json
-from a2a_cross_framework_poc.writer_agent_langgraph.agent_flow import create_writer_agent_graph
 
-# Step 1: Run the LangGraph writer agent
-graph = create_writer_agent_graph()
-state = {"messages": [{"type": "human", "content": "Write a blog post on the A2A protocol"}]}
-result = graph.invoke(state)
+# Discover the translator agent card
+AGENT_URL = "http://localhost:8001"
+AGENT_CARD_URL = f"{AGENT_URL}/.well-known/agent.json"
+RPC_ENDPOINT = f"{AGENT_URL}/rpc/"
 
-# Extract generated text from result
-ai_message = result["messages"][-1]
-generated_text = ai_message.content if hasattr(ai_message, 'content') else ai_message["content"]
+print("\n=== Discovering Translator Agent ===")
+agent_card = requests.get(AGENT_CARD_URL).json()
+print(json.dumps(agent_card, indent=2))
 
-print("\n=== Writer Agent Output ===")
-print(generated_text)
+# Create a blog post draft
+blog_draft = """
+# Understanding the A2A Protocol: Bridging Communication in the Digital Age
 
-# Step 2: Send it via A2A to editor/translator agent's RPC endpoint
-a2a_payload = {
+The A2A (Application-to-Application) protocol enables seamless communication between software agents. It allows agents built in different frameworks to exchange tasks, collaborate, and operate securely across boundaries.
+
+This standard uses JSON-RPC 2.0, supports streaming updates and task artifacts, and defines agent discovery via Agent Cards. It's a foundational step toward modular, interoperable agentic systems.
+"""
+
+print("\n=== Sending to Translator Agent via A2A ===")
+task_id = str(uuid.uuid4())
+payload = {
     "jsonrpc": "2.0",
-    "id": f"task-{uuid.uuid4()}",
+    "id": task_id,
     "method": "tasks/send",
     "params": {
-        "id": f"task-{uuid.uuid4()}",
+        "id": task_id,
         "message": {
             "role": "user",
             "parts": [
                 {
                     "type": "text",
-                    "text": f"Translate this blog post to Chinese:\n\n{generated_text}"
+                    "text": f"Translate this blog post to Chinese:\n{blog_draft}"
                 }
             ]
-        }
+        },
+        "metadata": {}
     }
 }
 
-print("\n=== Sending to Translator Agent via A2A ===")
-response = requests.post("http://localhost:8001/rpc", json=a2a_payload)
-response.raise_for_status()
-translated = response.json()
+response = requests.post(RPC_ENDPOINT, json=payload)
+result = response.json()
 
 print("\n=== Translated Output from Translator Agent ===")
-artifact_parts = translated["result"]["artifacts"][0]["parts"]
-translated_text = artifact_parts[0]["text"]["raw"] if isinstance(artifact_parts[0]["text"], dict) else artifact_parts[0]["text"]
-print(translated_text)
+artifacts = result.get("result", {}).get("artifacts", [])
+for artifact in artifacts:
+    for part in artifact.get("parts", []):
+        print(part.get("text", {}).get("raw", "[No content]"))

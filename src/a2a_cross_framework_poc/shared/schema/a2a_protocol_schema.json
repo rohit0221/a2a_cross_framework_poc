@@ -1,0 +1,77 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "A2A Protocol - Agent Card",
+    "type": "object",
+    "required": ["name", "description", "url", "version", "authentication", "defaultInputModes", "defaultOutputModes", "skills"],
+    "properties": {
+      "name": { "type": "string" },
+      "description": { "type": "string" },
+      "url": { "type": "string", "format": "uri" },
+      "provider": {
+        "type": "object",
+        "properties": {
+          "organization": { "type": "string" },
+          "url": { "type": "string", "format": "uri" }
+        },
+        "required": ["organization", "url"]
+      },
+      "version": { "type": "string" },
+      "documentationUrl": { "type": "string", "format": "uri" },
+      "capabilities": {
+        "type": "object",
+        "properties": {
+          "streaming": { "type": "boolean" },
+          "pushNotifications": { "type": "boolean" },
+          "stateTransitionHistory": { "type": "boolean" }
+        }
+      },
+      "authentication": {
+        "type": "object",
+        "properties": {
+          "schemes": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "credentials": { "type": "string" }
+        },
+        "required": ["schemes"]
+      },
+      "defaultInputModes": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "defaultOutputModes": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "skills": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["id", "name", "description", "tags"],
+          "properties": {
+            "id": { "type": "string" },
+            "name": { "type": "string" },
+            "description": { "type": "string" },
+            "tags": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "examples": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "inputModes": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "outputModes": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+  

@@ -1,0 +1,33 @@
+{
+  "name": "Writer Agent",
+  "description": "An agent that writes short blog articles based on a prompt.",
+  "url": "http://localhost:8000",
+  "provider": {
+    "organization": "Neural Ninja Labs",
+    "url": "http://neuralninja.dev"
+  },
+  "version": "1.0.0",
+  "documentationUrl": "http://localhost:8000/docs",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "authentication": {
+    "schemes": ["none"]
+  },
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain"],
+  "skills": [
+    {
+      "id": "write-blog",
+      "name": "Write Blog Article",
+      "description": "Generates a short blog article on a given topic or instruction.",
+      "tags": ["writing", "blog", "content generation"],
+      "examples": [
+        "Write a short blog post on the A2A protocol.",
+        "Generate an article about AI agents in enterprises."
+      ]
+    }
+  ]
+}
