@@ -49,12 +49,11 @@ async def rpc_handler(rpc_req: JsonRpcRequest):
     translation_task = Task(
         description=f"Translate to Chinese:\n\n{text_to_translate}",
         agent=translator,
-        expected_output=""  # placeholder
+        expected_output=""
     )
     crew = Crew(agents=[translator], tasks=[translation_task])
     results = crew.kickoff()
 
-    # Unwrap the CrewAI result into a plain string
     if isinstance(results, dict):
         val = next(iter(results.values()))
     else:
@@ -65,13 +64,13 @@ async def rpc_handler(rpc_req: JsonRpcRequest):
     else:
         translated_str = str(val)
 
-    # Return a well-formed A2A JSON-RPC response
+    # Final JSON-RPC response (fully A2A compliant)
     return {
         "jsonrpc": "2.0",
         "id": rpc_req.id,
         "result": {
             "id": rpc_req.params.get("id"),
-            "sessionId": "session-1",  # 🔧 improvement: use string not null
+            "sessionId": None,
             "status": {"state": "completed"},
             "artifacts": [
                 {
@@ -79,8 +78,8 @@ async def rpc_handler(rpc_req: JsonRpcRequest):
                         {"type": "text", "text": {"raw": translated_str}}
                     ],
                     "index": 0,
-                    "append": False,     # 🔧 improvement
-                    "lastChunk": True    # 🔧 improvement
+                    "append": False,
+                    "lastChunk": True
                 }
             ],
             "metadata": {}
