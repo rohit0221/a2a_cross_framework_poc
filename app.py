@@ -8,7 +8,7 @@ TRANSLATOR_RPC = "http://localhost:8001/rpc"
 
 st.title("📝 A2A Blog Generator + Translator")
 
-topic = st.text_input("Enter blog topic:", "Write a blog on the A2A protocol.")
+topic = st.text_input("Enter blog topic:", "")
 submit = st.button("Generate + Translate")
 
 if submit and topic:

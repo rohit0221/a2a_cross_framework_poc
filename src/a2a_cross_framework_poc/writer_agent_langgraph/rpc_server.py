@@ -35,13 +35,16 @@ async def rpc_handler(rpc_req: JsonRpcRequest):
             "error": {"code": -32601, "message": "Method not found"}
         }
 
-    # Extract topic from parts
-    message = rpc_req.params.get("message", {})
-    topic = "Write a blog on the A2A protocol."
-    for part in message.get("parts", []):
-        if part.get("type") == "text":
-            topic = part.get("text", topic)
-            break
+    # Extract topic from message parts
+    try:
+        parts = rpc_req.params["message"]["parts"]
+        topic = next(part["text"] for part in parts if part["type"] == "text")
+    except (KeyError, StopIteration, TypeError):
+        return {
+            "jsonrpc": "2.0",
+            "id": rpc_req.id,
+            "error": {"code": -32602, "message": "Missing or invalid 'text' part in message"}
+        }
 
     # Run LangGraph Writer Flow
     graph = create_writer_agent_graph()
